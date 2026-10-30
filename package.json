@@ -1,0 +1,23 @@
+{
+  "name": "visitka-site",
+  "version": "1.0.0",
+  "description": "Современный сайт Visitka с SQLite базой данных",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js"
+  },
+  "keywords": [
+    "website",
+    "express",
+    "sqlite",
+    "database"
+  ],
+  "author": "ramazan-182",
+  "license": "MIT",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "sqlite3": "^5.1.7"
+  }
+}

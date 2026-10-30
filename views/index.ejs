@@ -1,0 +1,100 @@
+const fs = require('fs');
+const path = require('path');
+const sqlite3 = require('sqlite3').verbose();
+
+const dbDir = path.join(__dirname, 'data');
+const dbFile = path.join(dbDir, 'visitka.db');
+
+fs.mkdirSync(dbDir, { recursive: true });
+
+const db = new sqlite3.Database(dbFile);
+
+function run(sql, params = []) {
+  return new Promise((resolve, reject) => {
+    db.run(sql, params, function (err) {
+      if (err) return reject(err);
+      resolve({ id: this.lastID, changes: this.changes });
+    });
+  });
+}
+
+function all(sql, params = []) {
+  return new Promise((resolve, reject) => {
+    db.all(sql, params, (err, rows) => {
+      if (err) return reject(err);
+      resolve(rows);
+    });
+  });
+}
+
+function get(sql, params = []) {
+  return new Promise((resolve, reject) => {
+    db.get(sql, params, (err, row) => {
+      if (err) return reject(err);
+      resolve(row);
+    });
+  });
+}
+
+async function init() {
+  await run(`
+    CREATE TABLE IF NOT EXISTS contacts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      message TEXT NOT NULL,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  const count = await get('SELECT COUNT(*) AS total FROM contacts');
+  if (!count || Number(count.total) === 0) {
+    await run(
+      `INSERT INTO contacts (name, email, message, created_at) VALUES (?, ?, ?, datetime('now'))`,
+      ['Александр', 'hello@visitka.dev', 'Привет! Это пример первого обращения в базе данных.',]
+    );
+  }
+}
+
+async function createMessage({ name, email, message }) {
+  return run(
+    `INSERT INTO contacts (name, email, message, created_at) VALUES (?, ?, ?, datetime('now'))`,
+    [name, email, message]
+  );
+}
+
+async function getLatestMessages(limit = 5) {
+  return all(
+    `SELECT id, name, email, message, created_at
+     FROM contacts
+     ORDER BY created_at DESC
+     LIMIT ?`,
+    [limit]
+  );
+}
+
+async function getMessages() {
+  return all(
+    `SELECT id, name, email, message, created_at
+     FROM contacts
+     ORDER BY created_at DESC`
+  );
+}
+
+async function getStats() {
+  const total = await get('SELECT COUNT(*) AS total FROM contacts');
+  const latest = await get('SELECT created_at FROM contacts ORDER BY created_at DESC LIMIT 1');
+
+  return {
+    total: Number(total?.total || 0),
+    latestDate: latest?.created_at || '—',
+  };
+}
+
+module.exports = {
+  init,
+  createMessage,
+  getLatestMessages,
+  getMessages,
+  getStats,
+};

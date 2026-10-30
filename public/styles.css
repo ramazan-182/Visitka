@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Visitka | Сообщения</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body class="messages-page">
+    <header class="header">
+      <div class="container nav">
+        <div class="brand">Visitka</div>
+        <nav class="nav-links">
+          <a href="/">Главная</a>
+          <a href="/messages" class="nav-button">База данных</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container messages-wrap">
+      <div class="section-heading left">
+        <span class="eyebrow">База данных</span>
+        <h2>Все обращения клиентов</h2>
+      </div>
+
+      <div class="table-wrap">
+        <% if (messages && messages.length > 0) { %>
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Имя</th>
+                <th>Email</th>
+                <th>Сообщение</th>
+                <th>Дата</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% messages.forEach((item) => { %>
+                <tr>
+                  <td><%= item.id %></td>
+                  <td><%= item.name %></td>
+                  <td><%= item.email %></td>
+                  <td><%= item.message %></td>
+                  <td><%= new Date(item.created_at).toLocaleString('ru-RU') %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        <% } else { %>
+          <div class="empty-state">Пока нет сообщений в базе данных.</div>
+        <% } %>
+      </div>
+    </main>
+  </body>
+</html>
