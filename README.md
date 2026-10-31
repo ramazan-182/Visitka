@@ -1,3 +1,8 @@
+https://ramazan-182.github.io/Visitka/
+
+
+
+
 :root {
   --bg: #0a1020;
   --bg-soft: #101a2c;
