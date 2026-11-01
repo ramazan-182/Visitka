@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
       message: formData.get('message') || ''
     };
 
-    const url = 'URL';
+    const url = 'https://script.google.com/macros/s/AKfycbyTLYdDvdS9pg8ZSbxLgvuD25fqIzKBvM81FvEFOqMF7Is-XFCoJP0MkHjk3EaZB4FB/exec';
 
     try {
       const response = await fetch(url, {
